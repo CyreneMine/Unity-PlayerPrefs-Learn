@@ -61,21 +61,6 @@ UserSettings/
 - 解决方案
 - 我的理解总结
 
-## Git 首次绑定说明
-
-本项目首次推送到 GitHub 时，需要完成：
-
-```powershell
-git init
-git branch -M main
-git remote add origin https://github.com/CyreneMine/Unity-PlayerPrefs-Learn.git
-git add .
-git commit -m "Initial Unity PlayerPrefs learning project"
-git push -u origin main
-```
-
-如果推送时提示认证失败，需要提供可访问该仓库的 GitHub 登录凭据或 Personal Access Token。
-
 ## 当前状态
 
 项目已创建基础 Unity 工程结构，后续会随着 PlayerPrefs 教程练习逐步补充代码、笔记和阶段复盘。
