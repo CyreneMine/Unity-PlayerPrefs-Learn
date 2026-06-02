@@ -47,9 +47,9 @@ UserSettings/
 
 后续可以逐步维护这些内容：
 
-- `LearningProgress.md`：记录每个阶段的学习进度
-- `Notes/`：整理 PlayerPrefs 和其他 Unity API 的知识点
-- `Screenshots/`：保存练习运行效果截图
+- [LearningProgress.md](LearningProgress.md)：记录每个阶段的学习进度
+- [Notes/](Notes/)：整理 PlayerPrefs 和其他 Unity API 的知识点
+- [Screenshots/](Screenshots/)：保存练习运行效果截图
 
 每次阶段总结建议记录：
 
