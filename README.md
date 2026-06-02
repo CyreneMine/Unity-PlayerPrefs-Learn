@@ -28,6 +28,7 @@
 Assets/              Unity 资源、场景和练习脚本
 Packages/            Unity 包管理配置
 ProjectSettings/     Unity 项目设置
+Notes/               知识点笔记和问题复盘
 AGENTS.md            Codex 协作规则
 README.md            项目说明和学习记录入口
 LearningProgress.md  课程目录和学习进度

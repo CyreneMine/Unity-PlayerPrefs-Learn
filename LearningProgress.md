@@ -13,9 +13,9 @@
 
 | 序号 | 课程内容 | 阶段 | 状态 | 学习日期 | 备注 |
 | --- | --- | --- | --- | --- | --- |
-| 01 | PlayerPrefs概述 | PlayerPrefs 基础 | 未开始 |  |  |
-| 02 | PlayerPrefs基本方法 | PlayerPrefs 基础 | 未开始 |  |  |
-| 03 | PlayerPrefs基本方法练习题 | PlayerPrefs 基础 | 未开始 |  |  |
+| 01 | PlayerPrefs概述 | PlayerPrefs 基础 | 已完成 | 2026-06-02 | 已开始理解 PlayerPrefs 的用途和学习工程记录方式 |
+| 02 | PlayerPrefs基本方法 | PlayerPrefs 基础 | 已完成 | 2026-06-02 | 已练习基础类型保存、读取和 Save |
+| 03 | PlayerPrefs基本方法练习题 | PlayerPrefs 基础 | 已完成 | 2026-06-02 | 完成玩家数据和装备 List 的保存读取练习，修正引用类型读取问题 |
 | 04 | PlayerPrefs存储位置 | PlayerPrefs 基础 | 未开始 |  |  |
 | 05 | PlayerPrefs存储位置练习题 | PlayerPrefs 基础 | 未开始 |  |  |
 | 06 | PlayerPrefs总结 | PlayerPrefs 基础 | 未开始 |  |  |
@@ -47,3 +47,15 @@
 - 解决方案：
 - 我的理解总结：
 ```
+
+## 阶段复盘记录
+
+### 2026-06-02 PlayerPrefs 基本方法练习题
+
+- 学习主题：使用 PlayerPrefs 保存和读取玩家基础信息与装备列表。
+- 涉及 API：`PlayerPrefs.SetString`、`PlayerPrefs.SetInt`、`PlayerPrefs.GetString`、`PlayerPrefs.GetInt`、`PlayerPrefs.Save`。
+- 完成的练习：创建 `Player` 玩家类和 `Item` 装备类，为玩家封装 `Save()`、`Load()`、`Show()` 方法，并用 `ItemCount + 下标 key` 的方式保存装备列表。
+- 遇到的问题：读取装备列表时，最开始把 `Item item = new Item()` 写在循环外，导致 List 中多个位置可能引用同一个装备对象。
+- 解决方案：把 `new Item()` 放进读取循环内部，每读取一条装备数据就创建一个新的 `Item` 对象，再添加到 `items` 列表。
+- 我的理解总结：PlayerPrefs 保存的是 key-value 数据，数据本身没有因为引用问题丢失；真正出错的是读取回内存时，如果重复使用同一个 class 对象，就会让 List 中多个元素指向同一个地址，最后显示成最后一次读取的数据。
+- 待确认事项：脚本代码已完成，但需要在 Unity 场景中确认 `Lesson1_PlayerPrefs` 是否挂载到某个 GameObject 上，否则 `Start()` 不会执行。
