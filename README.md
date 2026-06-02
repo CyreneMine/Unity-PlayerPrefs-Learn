@@ -6,11 +6,14 @@
 
 ## 学习目标
 
-- 理解 `PlayerPrefs` 的基本用途和适用场景
-- 掌握 `PlayerPrefs.SetInt`、`SetFloat`、`SetString` 等保存方法
-- 掌握 `PlayerPrefs.GetInt`、`GetFloat`、`GetString` 等读取方法
-- 理解默认值、键名管理、数据覆盖和删除的基本逻辑
-- 通过小练习熟悉 Unity 中本地简单数据存储的使用方式
+- 理解 `PlayerPrefs` 的基本用途、适用场景和局限性
+- 掌握 `PlayerPrefs` 常用保存、读取、删除和持久化方法
+- 理解 `PlayerPrefs` 在不同平台上的数据存储位置
+- 通过练习题巩固 API 使用、需求分析和调试思路
+- 创建可复用的数据管理类，减少散乱的键名和重复逻辑
+- 结合反射保存和读取常用数据类型、`List`、`Dictionary` 和自定义数据类型
+- 理解简单加密思路，知道如何降低明文存储带来的风险
+- 完成打包前后的验证，总结 PlayerPrefs 在实际项目中的使用边界
 
 ## 项目信息
 
@@ -27,6 +30,7 @@ Packages/            Unity 包管理配置
 ProjectSettings/     Unity 项目设置
 AGENTS.md            Codex 协作规则
 README.md            项目说明和学习记录入口
+LearningProgress.md  课程目录和学习进度
 ```
 
 以下目录由 Unity 自动生成，不提交到 Git：
