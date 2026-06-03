@@ -29,3 +29,6 @@
 *.mp3 binary
 *.wav binary
 *.ogg binary
+
+# Unity tutorial layout files can be misclassified by GitHub Linguist.
+Assets/TutorialInfo/Layout.wlt linguist-vendored
