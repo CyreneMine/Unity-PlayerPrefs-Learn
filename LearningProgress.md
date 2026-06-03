@@ -18,7 +18,7 @@
 | 03 | PlayerPrefs基本方法练习题 | PlayerPrefs 基础 | 已完成 | 2026-06-02 | 完成玩家数据和装备 List 的保存读取练习，修正引用类型读取问题 |
 | 04 | PlayerPrefs存储位置 | PlayerPrefs 基础 | 已完成 | 2026-06-03 | 理解多份数据需要用不同 key 前缀区分 |
 | 05 | PlayerPrefs存储位置练习题 | PlayerPrefs 基础 | 已完成 | 2026-06-03 | 完成多玩家信息存储和排行榜存取练习 |
-| 06 | PlayerPrefs总结 | PlayerPrefs 基础 | 未开始 |  |  |
+| 06 | PlayerPrefs总结 | PlayerPrefs 基础 | 已完成 | 2026-06-03 | 回顾 PlayerPrefs 基础用法，并了解后续课程会进行封装 |
 | 07 | 必备知识点及知识小补充 | 必要补充知识 | 未开始 |  |  |
 | 08 | 需求分析 | 必要补充知识 | 未开始 |  |  |
 | 09 | 数据管理类创建 | 数据管理类与常用类型存取 | 未开始 |  |  |
@@ -69,3 +69,12 @@
 - 解决方案：在新增排行榜记录前先查找同名玩家，如果不存在则新增；如果存在则按排行榜规则更新成绩，避免同一个玩家重复出现在榜单里。
 - 我的理解总结：排行榜通常应该表达“玩家当前成绩记录”，同名玩家重复出现会降低可读性；是否覆盖、只保留最高分、还是保留历史记录，取决于需求，但需要明确规则。
 - 后续注意：本次进一步理解了 `CompareTo` 在排序委托中的返回值含义；更新成绩时仍要注意分数和通关时间是否来自同一次通关记录。
+
+### 2026-06-03 PlayerPrefs 基础阶段总结
+
+- 学习主题：总结 PlayerPrefs 基础 API、存储方式和练习题思路。
+- 涉及 API：`PlayerPrefs.SetInt`、`PlayerPrefs.SetFloat`、`PlayerPrefs.SetString`、`PlayerPrefs.GetInt`、`PlayerPrefs.GetFloat`、`PlayerPrefs.GetString`、`PlayerPrefs.Save`、`PlayerPrefs.DeleteKey`、`PlayerPrefs.DeleteAll`。
+- 完成的练习：保存读取玩家基础信息、装备列表、多名玩家信息和排行榜数据。
+- 遇到的问题：基础 API 只能直接保存简单类型，复杂数据需要拆成多个 key；多份同结构数据需要 key 前缀；列表需要保存数量和下标字段；读取 class 对象时要注意引用类型。
+- 解决方案：使用统一 key 命名规则、数量字段、循环保存和读取、读取前清空旧列表、每次循环创建新对象。
+- 我的理解总结：PlayerPrefs 适合少量本地简单数据保存。当前写法可以完成练习，但 key 拼接、重复代码和复杂类型拆分会越来越多，所以后续课程会对 PlayerPrefs 做封装，提高复用性并降低出错概率。
