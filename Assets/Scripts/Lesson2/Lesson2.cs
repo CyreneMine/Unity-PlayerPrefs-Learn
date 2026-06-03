@@ -18,10 +18,12 @@ public class RankListInfo
                 if (ranks[i].playerScore < newRank.playerScore)
                 {
                     ranks[i].playerScore = newRank.playerScore;
-                    if (ranks[i].playerTime > newRank.playerTime)
-                    {
-                        ranks[i].playerTime = newRank.playerTime;
-                    }
+                    ranks[i].playerTime = newRank.playerTime;
+                    
+                }
+                else if (ranks[i].playerTime > newRank.playerTime && ranks[i].playerScore == newRank.playerScore)
+                {
+                    ranks[i].playerTime = newRank.playerTime;
                 }
                 break;
             }
@@ -59,9 +61,18 @@ public class RankListInfo
     }
     public  void Show()
     {
+        
         ranks.Sort((a, b) =>
         {
-            return b.playerScore.CompareTo(a.playerScore);
+            /*b.playerScore.CompareTo(a.playerScore)
+            大于0  => 左边更大
+            等于0  => 一样大
+            小于0  => 左边更小*/
+            int result = b.playerScore.CompareTo(a.playerScore);
+            if (result!=0)
+                return result;
+            return a.playerTime.CompareTo(b.playerTime);
+            
         });
         for (int i = 0; i < ranks.Count; i++)
         {
