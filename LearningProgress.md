@@ -24,12 +24,12 @@
 | 09 | 数据管理类创建 | 数据管理类与常用类型存取 | 已完成 | 2026-06-10 | 搭建 PlayerPrefsDataMgr 单例和保存读取入口 |
 | 10 | 结合反射常用数据类型存储 | 数据管理类与常用类型存取 | 已完成 | 2026-06-10 | 通过反射保存 int、float、string 和 bool 字段 |
 | 11 | 结合反射List数据类型存储 | 数据管理类与常用类型存取 | 已完成 | 2026-06-10 | 使用 IList 保存列表数量和基础类型元素 |
-| 12 | 结合反射Dictionary数据类型存储 | 数据管理类与常用类型存取 | 未开始 |  |  |
-| 13 | 结合反射自定义数据存储 | 数据管理类与常用类型存取 | 未开始 |  |  |
-| 14 | 结合反射读取常用数据类型 | 数据管理类与常用类型存取 | 未开始 |  |  |
-| 15 | 结合反射读取List数据类型 | 数据管理类与常用类型存取 | 未开始 |  |  |
-| 16 | 结合反射读取Dictionary数据类型 | 数据管理类与常用类型存取 | 未开始 |  |  |
-| 17 | 结合反射读取自定义数据类型 | 数据管理类与常用类型存取 | 未开始 |  |  |
+| 12 | 结合反射Dictionary数据类型存储 | 数据管理类与常用类型存取 | 已完成 | 2026-06-10 | 使用 IDictionary 按下标配对保存基础类型键和值 |
+| 13 | 结合反射自定义数据存储 | 数据管理类与常用类型存取 | 已完成 | 2026-06-10 | 递归保存单个对象、List 和 Dictionary 中的自定义类型 |
+| 14 | 结合反射读取常用数据类型 | 数据管理类与常用类型存取 | 已完成 | 2026-06-10 | 动态创建对象并读取 int、float、string 和 bool 字段 |
+| 15 | 结合反射读取List数据类型 | 数据管理类与常用类型存取 | 已完成 | 2026-06-10 | 动态创建 List 并递归读取元素 |
+| 16 | 结合反射读取Dictionary数据类型 | 数据管理类与常用类型存取 | 已完成 | 2026-06-10 | 动态创建 Dictionary 并按下标恢复键值配对 |
+| 17 | 结合反射读取自定义数据类型 | 数据管理类与常用类型存取 | 已完成 | 2026-06-10 | 完成递归读取及运行时赋值、跨运行读取验证 |
 | 18 | 加密思路 | 收尾 | 未开始 |  |  |
 | 19 | 打包总结 | 收尾 | 未开始 |  |  |
 
@@ -118,3 +118,49 @@
 - 边界与待办：空列表可以保存数量 `0`；列表缩短后旧下标 key 会残留，但后续读取可以按新数量忽略；列表中的 `null` 元素会计入数量但不会保存对应值。旧 key 清理和 `null` 元素规则将在全部功能完成后统一处理。
 - 测试范围：当前实际测试覆盖 `List<int>`；其他基础类型列表使用相同保存分支，但后续可以分别补充样例验证 key 和值。
 - 我的理解总结：PlayerPrefs 不能直接保存 List，因此需要保存数量并把每个元素拆开。递归调用 `SaveValue` 后，列表结构和元素类型处理可以分开，后续扩展自定义类型时也能继续复用。
+
+### 2026-06-10 结合反射保存基础类型 Dictionary
+
+- 学习主题：在统一保存入口中识别 Dictionary，并将字典拆成数量、键和值保存。
+- 涉及 API：`Type.IsAssignableFrom()`、`IDictionary`、`IDictionary.Count`、`IDictionary.Keys`。
+- 完成的练习：使用 `typeof(IDictionary).IsAssignableFrom(fieldType)` 判断字典类型；保存字典数量；遍历键集合，并使用相同下标分别保存 key 与对应 value；使用 `Dictionary<int, string>` 完成测试。
+- 当前支持范围：字典 key 和 value 为 `int`、`float`、`string` 或 `bool` 时，可以复用已有基础类型保存分支；自定义类型将在后续课程中补全。
+- 顺序理解：Dictionary 不保证固定遍历顺序，但保存时每一组 key/value 来自同一次遍历并使用相同下标，因此配对不会错；读取后字典本身也不依赖原始顺序。
+- 边界与待办：空字典可以保存数量 `0`；字典缩短后旧下标 key 会残留；`null` value 或当前不支持的键值类型会被跳过，但数量仍包含该项，可能导致读取缺口。这些规则将在全部功能完成后统一处理。
+- 调试注意：当前 `Debug.Log(keyName)` 在类型判断之前执行，因此打印出 key 只代表进入了 `SaveValue`，不一定代表该值最终被 PlayerPrefs 成功保存。
+- 场景验证：`Test` 组件仍挂载在 `SampleScene` 中；本次场景改动移除了已禁用的旧 `Lesson2` 组件，不影响当前测试。
+- 我的理解总结：Dictionary 保存需要同时保存结构数量和每组键值。通过相同下标建立 key/value 配对，再递归复用 `SaveValue`，可以让字典结构处理与具体数据类型处理分开。
+
+### 2026-06-10 结合反射保存自定义数据类型
+
+- 学习主题：让基础类型、List 和 Dictionary 以外的自定义对象继续进入反射保存流程。
+- 完成的练习：在 `SaveValue` 的最终分支中递归调用 `SaveData`；测试单个 `ItemInfo`、`List<ItemInfo>` 和 `Dictionary<int, ItemInfo>` 三种嵌套形式。
+- 设计思路：容器分支负责拆分结构，自定义对象分支负责继续拆分字段，最终让嵌套数据递归到基础类型后交给 PlayerPrefs 保存。
+- 修正记录：当前 `SaveData` 使用无参数 `Type.GetFields()`，规则是保存 public 字段；已将测试类 `ItemInfo` 中的 `num` 和 `str` 改为 public，因此递归进入对象后能够取得并保存这两个值。
+- 调试误区：`Debug.Log(keyName)` 在类型判断之前执行。看到 `ItemInfo` 对应的 key 日志，只能证明对象进入了 `SaveValue`，不能证明它的私有字段已经写入 PlayerPrefs。
+- 后续边界：任意未支持类型都会进入自定义对象递归；如果对象之间存在循环引用，可能发生无限递归。当前学习阶段先理解这一风险，不需要立即设计复杂方案。
+- 当前结论：自定义类型递归框架与 public 字段保存验证已完成；单个 `ItemInfo`、`List<ItemInfo>` 和 `Dictionary<int, ItemInfo>` 都可以递归拆分到基础字段。private 字段不会被当前规则保存。
+
+### 2026-06-10 结合反射读取常用数据类型
+
+- 学习主题：根据目标类型动态创建对象，并从 PlayerPrefs 恢复基础类型字段。
+- 涉及 API：`Activator.CreateInstance()`、`Type.GetFields()`、`FieldInfo.SetValue()`、`PlayerPrefs.GetInt`、`PlayerPrefs.GetFloat`、`PlayerPrefs.GetString`。
+- 完成的练习：使用 `Activator.CreateInstance(type)` 创建目标对象；按保存阶段相同规则重建字段 key；根据字段类型读取 `int`、`float`、`string` 和 `bool`；通过 `SetValue` 将读取结果写入对象；使用 `Show()` 输出恢复结果。
+- key 对称性：读取能否成功依赖保存和读取使用完全一致的 key 规则。字段类型、类型名、字段名或拼接格式任一变化，都会导致读取不到原值。
+- 当前阶段现象：List、Dictionary 和自定义对象读取尚未实现，因此 `LoadValue` 会对它们返回 `null`，并覆盖对象字段原本的初始化值；后续课程会逐步补全。
+- 边界注意：未调用 `PlayerPrefs.HasKey()` 时，缺失 key 会返回类型默认值，无法区分“保存过默认值”和“从未保存”；`Activator.CreateInstance(type)` 要求目标类型能够通过无参方式创建。
+- 运行验证：测试脚本先保存 `PlayerInfo`，再读取为新的 `PlayerInfo` 并调用 `Show()`；代码链路覆盖基础字段，但 Console 实际输出仍应在 Unity 运行时确认。
+- 我的理解总结：保存负责把对象字段拆成 key-value，读取则需要用同一规则重新拼出 key，并把 value 反射写回新对象。保存与读取是必须保持对称的一组逻辑。
+
+### 2026-06-10 结合反射读取 List、Dictionary 和自定义类型
+
+- 学习主题：递归恢复集合和自定义对象，让保存与读取支持完整嵌套数据结构。
+- 涉及 API：`Activator.CreateInstance()`、`Type.GetGenericArguments()`、`IList.Add()`、`IDictionary.Add()`。
+- List 读取：读取保存的数量；动态创建具体 List；取得元素泛型类型；按下标递归读取元素并加入列表。
+- Dictionary 读取：读取保存的数量；动态创建具体 Dictionary；分别取得 key/value 泛型类型；按相同下标递归读取并恢复键值配对。
+- 自定义类型读取：当类型不是基础类型、List 或 Dictionary 时，递归调用 `LoadData` 创建对象并恢复其 public 字段。
+- 当前验证范围：测试包含基础类型 List、基础类型 Dictionary、单个 `ItemInfo`、`List<ItemInfo>` 和 `Dictionary<int, ItemInfo>`；当前在同一个 `Start()` 中先保存再读取，可以验证 key 和类型规则是否对称。
+- 实际流程验证：测试数据不再在字段声明时预设；第一次运行在 `Start()` 中模拟游玩后赋值并保存，随后注释保存流程；下一次运行只读取并调用 `Show()`，确认数据来自持久化存储。
+- 验证范围：跨运行测试覆盖基础字段、`List<int>`、`Dictionary<int, string>` 和单个自定义对象 `ItemInfo`；非空 `List<ItemInfo>` 与 `Dictionary<int, ItemInfo>` 已验证递归逻辑，但尚可补充跨运行加强测试。
+- 边界注意：集合和自定义类型必须能够通过 `Activator.CreateInstance` 创建；当前实现面向具体泛型 `List<T>` 和 `Dictionary<TKey, TValue>`，若字段声明为接口或不可实例化类型，动态创建会失败。
+- 我的理解总结：集合读取先恢复结构，再递归恢复元素；自定义类型读取先创建对象，再递归恢复字段。整个框架的核心是保存与读取始终使用相同的类型分支和 key 规则。
