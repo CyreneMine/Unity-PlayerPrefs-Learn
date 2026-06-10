@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerInfo{
@@ -6,6 +7,8 @@ public class PlayerInfo{
     public float height;
     //true是男
     public bool sex;
+
+    public List<int> list = new List<int>() { 1, 2, 3, 4 };
 }
 public class Test : MonoBehaviour
 {

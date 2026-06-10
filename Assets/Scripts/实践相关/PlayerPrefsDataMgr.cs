@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Reflection;
 using UnityEngine;
 
@@ -56,6 +57,16 @@ public class PlayerPrefsDataMgr
             {
                 Debug.Log(keyName);
                 PlayerPrefs.SetInt(keyName,(bool)value ? 1 : 0);
+            }else if (typeof(IList).IsAssignableFrom(fieldType))
+            {
+                IList list = value as IList;
+                PlayerPrefs.SetInt(keyName,list.Count);
+                int index = 0;
+                foreach (object obj in list)
+                {
+                    SaveValue(obj, keyName+index);
+                    index++;
+                }
             }
         }
         
