@@ -20,9 +20,9 @@
 | 05 | PlayerPrefs存储位置练习题 | PlayerPrefs 基础 | 已完成 | 2026-06-03 | 完成多玩家信息存储和排行榜存取练习 |
 | 06 | PlayerPrefs总结 | PlayerPrefs 基础 | 已完成 | 2026-06-03 | 回顾 PlayerPrefs 基础用法，并了解后续课程会进行封装 |
 | 07 | 必备知识点及知识小补充 | 必要补充知识 | 已完成 | 2026-06-10 | 练习 Type、IsAssignableFrom、Activator 和泛型参数反射 |
-| 08 | 需求分析 | 必要补充知识 | 未开始 |  |  |
-| 09 | 数据管理类创建 | 数据管理类与常用类型存取 | 未开始 |  |  |
-| 10 | 结合反射常用数据类型存储 | 数据管理类与常用类型存取 | 未开始 |  |  |
+| 08 | 需求分析 | 必要补充知识 | 已完成 | 2026-06-10 | 明确统一保存读取入口和后续封装方向 |
+| 09 | 数据管理类创建 | 数据管理类与常用类型存取 | 已完成 | 2026-06-10 | 搭建 PlayerPrefsDataMgr 单例和保存读取入口 |
+| 10 | 结合反射常用数据类型存储 | 数据管理类与常用类型存取 | 已完成 | 2026-06-10 | 通过反射保存 int、float、string 和 bool 字段 |
 | 11 | 结合反射List数据类型存储 | 数据管理类与常用类型存取 | 未开始 |  |  |
 | 12 | 结合反射Dictionary数据类型存储 | 数据管理类与常用类型存取 | 未开始 |  |  |
 | 13 | 结合反射自定义数据存储 | 数据管理类与常用类型存取 | 未开始 |  |  |
@@ -86,4 +86,24 @@
 - 完成的练习：获取父类和子类的 `Type`；判断子类类型能否赋值给父类；根据运行时类型动态创建对象；读取 `List<float>` 和 `Dictionary<string, float>` 的泛型参数类型。
 - 容易混淆的地方：`fatherType.IsAssignableFrom(sonType)` 表示“一个 `Son` 类型的实例能否赋值给 `Father` 类型变量”，调用方是接收类型，参数是准备赋值的来源类型，反过来判断结果会不同。
 - 我的理解总结：反射可以在代码运行时获取和判断类型，并根据 `Type` 创建实例。后续封装 PlayerPrefs 时，可以利用这些能力识别传入数据的具体类型，再选择对应的保存和读取方式。
-- 运行验证：脚本代码检查通过；当前场景和 Prefab 中未检索到 `Reflection` 脚本引用，仍需在 Unity 中将脚本挂载到 GameObject 后运行，确认 Console 输出为“可以装”、`System.Single`、`System.String`、`System.Single`。
+- 运行验证：已将 `Reflection` 脚本挂载并启用在 `SampleScene` 的 GameObject 上，同时禁用旧的 `Lesson2` 组件以避免日志干扰；已在 Unity 中完成运行测试。
+
+### 2026-06-10 PlayerPrefs 数据管理类框架搭建
+
+- 学习主题：分析 PlayerPrefs 封装需求，并创建统一数据管理类的基础框架。
+- 完成的练习：创建 `PlayerPrefsDataMgr`；使用静态实例和私有构造函数实现普通 C# 单例；预留统一保存和读取方法，为后续通过反射处理不同类型做准备。
+- 当前框架思路：外部通过 `PlayerPrefsDataMgr.Instance` 获取唯一管理器，再使用统一入口传入数据、类型和 key，具体保存读取规则由管理器内部负责。
+- 修正记录：已将保存方法参数和读取方法返回值统一改为小写 `object`，普通 C# 数据类、`List` 和 `Dictionary` 可以通过统一入口保存与返回；同时已清理未使用的 `UnityEngine.Object` 别名。
+- 命名修正：已将 `SaveDate` 和 `LoadDate` 修正为 `SaveData` 和 `LoadData`；`Date` 表示日期，`Data` 表示数据。
+- 我的理解总结：这一阶段先确定管理器对外暴露什么入口，不急着实现所有类型。好的统一入口能够隐藏 key 拼接和类型判断细节，但参数类型必须足够通用，否则后续封装会在入口处限制住可保存的数据。
+
+### 2026-06-10 结合反射保存常用数据类型
+
+- 学习主题：通过反射读取对象字段，并将常用基础数据保存到 PlayerPrefs。
+- 涉及 API：`object.GetType()`、`Type.GetFields()`、`FieldInfo.GetValue()`、`FieldInfo.FieldType`、`PlayerPrefs.SetInt`、`PlayerPrefs.SetFloat`、`PlayerPrefs.SetString`。
+- 完成的练习：遍历对象的公开字段；使用“外部 key + 数据类型 + 字段类型 + 字段名”组成保存 key；根据运行时类型分别保存 `int`、`float`、`string` 和 `bool`；将 `bool` 转换为 `0` 或 `1` 保存。
+- 运行验证：创建包含四种基础字段的 `PlayerInfo` 测试数据；`Test` 脚本已挂载并启用在 `SampleScene` 中，旧的 `Lesson2` 和 `Reflection` 组件已禁用，避免测试日志互相干扰。
+- 修正记录：已在 `SaveValue` 中判断字段值是否为 `null`，避免直接调用 `value.GetType()` 产生空引用异常；并在整份对象字段保存完成后调用一次 `PlayerPrefs.Save()`，保证本次修改立即落盘。
+- 修正与待办：已在 `SaveData` 外层判断整个对象是否为 `null`，避免调用 `data.GetType()` 产生异常。字段为 `null` 时旧 key 不会自动删除的问题，将在全部保存读取功能完成后统一设计处理；遇到当前未支持的字段类型时仍会静默跳过。
+- 保存时机理解：`SetInt`、`SetFloat` 和 `SetString` 用于修改 PlayerPrefs 数据，Unity 正常退出时通常会自动保存；`PlayerPrefs.Save()` 用于主动要求立即写入持久化存储。重要节点可以主动保存，频繁变化的数据可以集中保存，避免不必要的磁盘写入。
+- 我的理解总结：反射负责发现对象有哪些字段并取得字段值，`SaveValue` 负责根据具体类型选择 PlayerPrefs API。这样新增类型处理时可以集中扩展，而业务对象不需要自己拼接每一个 key。
