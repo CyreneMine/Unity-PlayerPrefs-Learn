@@ -26,6 +26,8 @@
 
 ```text
 Assets/              Unity 资源、场景和练习脚本
+Assets/Scripts/PlayerPrefsDataMgr/
+                     PlayerPrefs 数据管理器、测试脚本与反射练习
 Packages/            Unity 包管理配置
 ProjectSettings/     Unity 项目设置
 Notes/               知识点笔记和问题复盘
@@ -63,4 +65,4 @@ UserSettings/
 
 ## 当前状态
 
-已完成 PlayerPrefs 基础阶段、反射保存读取封装、跨运行验证和基础加密思路学习。当前进入最终打包与课程总结阶段。
+已完成全部 19 P PlayerPrefs 课程学习。项目包含基础 API 练习、排行榜练习、基于反射的数据管理器、复杂类型递归保存读取、跨运行验证、加密思路和最终导出包。
